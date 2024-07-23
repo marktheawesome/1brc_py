@@ -456,7 +456,7 @@ class CreateMeasurement:
         batches = max(records // 10_000_000, 1)
         batch_ends = np.linspace(0, records, batches + 1).astype(int)
 
-        with open(file_name, "w") as f:
+        with open(file_name, "w", encoding='utf-8') as f:
             for i in tqdm(range(batches)):
                 from_, to = batch_ends[i], batch_ends[i + 1]
                 data = self.generate_batch(std_dev, to - from_)
@@ -500,6 +500,14 @@ if __name__ == "__main__":
         type=min_records,
         default=1_000_000_000,
     )
+    parser.add_argument(
+        "-s",
+        "--separator",
+        help="The Speorator between station and measurement.",
+        type=str,
+        dest="separator",
+        default=";"
+    )
 
     args = parser.parse_args()
 
@@ -507,4 +515,5 @@ if __name__ == "__main__":
     measurement.generate_measurement_file(
         file_name=args.output,
         records=args.records,
+        sep=args.separator
     )
